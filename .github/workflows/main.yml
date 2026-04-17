@@ -5,19 +5,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
       - name: set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+
       - name: Build APK
         run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          # This command finds gradlew wherever it is and runs it
+          GRADLEW_PATH=$(find . -name gradlew)
+          chmod +x $GRADLEW_PATH
+          $GRADLEW_PATH assembleDebug
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MyGame
-          path: app/build/outputs/apk/debug/*.apk
+          name: SandSurvival-Game
+          path: "**/build/outputs/apk/debug/*.apk"
