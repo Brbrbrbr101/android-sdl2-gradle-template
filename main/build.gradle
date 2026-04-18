@@ -1,80 +1,47 @@
-buildscript {
-    repositories {
-        // These are the reliable modern "stores"
-        google()
-        mavenCentral()
-        jcenter() 
-    }
-    dependencies {
-        // CHANGED: Switched from 0.8.0-rc2 to 0.8.3
-        // This version is stable and actually exists on Google's servers.
-        classpath 'com.android.tools.build:gradle-experimental:0.8.3'
-    }
+plugins {
+    id 'com.android.application'
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        jcenter()
-    }
-}
+android {
+    namespace 'com.yourname.sdl2game' // Change to your package name
+    compileSdk 34 // Modern SDK
 
-// --- YOUR GAME LOGIC ---
-apply plugin: 'com.android.model.native'
+    defaultConfig {
+        applicationId "com.yourname.sdl2game"
+        minSdk 21 // Higher minSdk is better for modern SDL2
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
 
-def lib_distribution_root = '../distribution'
-
-model {
-    repositories {
-        libs(PrebuiltLibraries) {
-            SDL2 {
-                headers.srcDir "../SDL2/include"
-                binaries.withType(SharedLibraryBinary) {
-                    sharedLibraryFile = file("${lib_distribution_root}/SDL2/lib/${targetPlatform.getName()}/libSDL2.so")
-                }
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++17"
+                arguments "-DANDROID_STL=c++_static"
             }
         }
     }
 
-    android {
-        compileSdkVersion = 24
-        buildToolsVersion = '23.0.3'
-
-        defaultConfig {
-            minSdkVersion.apiLevel = 13
-            targetSdkVersion.apiLevel = 24
-            versionCode = 1
-            versionName = '1.0'
+    buildTypes {
+        release {
+            minifyEnabled false
         }
-        
-        ndk {
-            moduleName = 'main'
-            cppFlags.addAll(["-I" + file("../SDL2/include/").absolutePath])
-            CFlags.addAll(["-I" + file("../SDL2/include/").absolutePath])
-            stl "stlport_static"
-        }
+    }
 
-        sources {
-            main {
-                jni {
-                    dependencies {
-                        library 'SDL2' linkage 'shared'
-                    }
-                    source {
-                        srcDirs 'src/'
-                        srcDirs '../SDL2/src/main/android/'
-                    }
-                }
-            }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.22.1"
+        }
+    }
+
+    sourceSets {
+        main {
+            // This replaces your old 'sources' block
+            jniLibs.srcDirs = ['../distribution/SDL2/lib/']
         }
     }
 }
 
-task(distributeLib, type : Copy) {
-    dependsOn assemble
-    into '../distribution/main/'
-    from('build/outputs/native/release/lib') {
-        into 'lib/'
-    }
+dependencies {
+    // Standard Android dependencies go here
 }
