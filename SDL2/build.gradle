@@ -4,7 +4,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // Modern Android Gradle Plugin
         classpath 'com.android.tools.build:gradle:8.2.2'
     }
 }
