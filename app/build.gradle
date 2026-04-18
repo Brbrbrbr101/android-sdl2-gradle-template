@@ -1,8 +1,10 @@
 plugins {
-    id 'com.android.application'
+    // We put the version here to force it to work without a root file
+    id 'com.android.application' version '8.2.2'
 }
 
 android {
+    // This MUST match the package name in your AndroidManifest.xml
     namespace 'org.libsdl.app'
     compileSdk 34
 
@@ -15,14 +17,23 @@ android {
 
         externalNativeBuild {
             cmake {
+                // Tells C++ to use modern standards and build for common phones
                 arguments "-DANDROID_STL=c++_static"
                 abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64'
             }
         }
     }
 
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
     externalNativeBuild {
         cmake {
+            // This points to where your C++ 'glue' script lives
             path "src/main/cpp/CMakeLists.txt"
             version "3.22.1"
         }
@@ -30,11 +41,14 @@ android {
 
     sourceSets {
         main {
+            // This is where your prebuilt SDL2 .so files should be
             jniLibs.srcDirs = ['../distribution/SDL2/lib/']
         }
     }
 }
 
 dependencies {
+    // Basic Android support libraries
     implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
 }
