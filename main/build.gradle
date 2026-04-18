@@ -1,13 +1,14 @@
 buildscript {
     repositories {
-        // Modern "stores" to find the build tools
         google()
         mavenCentral()
+        // We keep jcenter as a last-resort fallback for very old items
         jcenter() 
     }
     dependencies {
-        // The tool required to read the 'model' block below
-        classpath 'com.android.tools.build:gradle-experimental:0.8.0-rc2'
+        // CHANGED: Switched from 0.8.0-rc2 to 0.8.3 (Stable)
+        // This version is still available on Google/Maven repositories.
+        classpath 'com.android.tools.build:gradle-experimental:0.8.3'
     }
 }
 
@@ -19,7 +20,7 @@ allprojects {
     }
 }
 
-// --- YOUR GAME LOGIC STARTS HERE ---
+// --- YOUR GAME LOGIC ---
 apply plugin: 'com.android.model.native'
 
 def lib_distribution_root = '../distribution'
@@ -70,7 +71,6 @@ model {
     }
 }
 
-// Task to move the built library to the distribution folder
 task(distributeLib, type : Copy) {
     dependsOn assemble
     into '../distribution/main/'
