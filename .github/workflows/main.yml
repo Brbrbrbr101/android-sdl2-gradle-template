@@ -9,24 +9,30 @@ jobs:
         with:
           submodules: recursive
 
+      # 1. Setup Java 17 (The Modern Standard)
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      # 2. Setup Android SDK
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      # THIS STEP IS THE FIX: It forces Gradle 8.5
+      # 3. FORCE GRADLE 8.5 (This is the "Exorcist" step)
+      # This downloads a modern Gradle that knows how to talk to Java 17
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 8.5
 
+      # 4. The Build Command
+      # NOTE: We use 'gradle' NOT './gradlew' here. 
+      # Using 'gradle' uses the version we just downloaded (8.5).
+      # Using './gradlew' would use your old broken file and crash again.
       - name: Build with Gradle
         run: |
-          # Use 'gradle' instead of './gradlew' to use the version we just installed
           gradle assembleDebug --stacktrace
           
       - name: Upload APK
