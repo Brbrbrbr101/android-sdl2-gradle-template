@@ -8,21 +8,27 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Set up JDK 8
+      - name: Set up Java 17 (For Android Tools)
         uses: actions/setup-java@v4
         with:
-          java-version: '8'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Switch to Java 8 (For Old Template)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
 
       - name: Find and Build
         run: |
           SET_PATH=$(find . -name gradlew -print -quit)
           cd $(dirname $SET_PATH)
           chmod +x gradlew
-          # Force it to use the Java 8 we just installed
+          # Force the build to use the Java 8 we just switched to
           ./gradlew assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
           
       - name: Upload APK
