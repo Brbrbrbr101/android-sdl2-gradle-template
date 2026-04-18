@@ -1,8 +1,31 @@
+buildscript {
+    repositories {
+        // Modern "stores" to find the build tools
+        google()
+        mavenCentral()
+        jcenter() 
+    }
+    dependencies {
+        // The tool required to read the 'model' block below
+        classpath 'com.android.tools.build:gradle-experimental:0.8.0-rc2'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+    }
+}
+
+// --- YOUR GAME LOGIC STARTS HERE ---
 apply plugin: 'com.android.model.native'
 
 def lib_distribution_root = '../distribution'
+
 model {
-     repositories {
+    repositories {
         libs(PrebuiltLibraries) {
             SDL2 {
                 headers.srcDir "../SDL2/include"
@@ -13,7 +36,7 @@ model {
         }
     }
 
-   android {
+    android {
         compileSdkVersion = 24
         buildToolsVersion = '23.0.3'
 
@@ -23,6 +46,7 @@ model {
             versionCode = 1
             versionName = '1.0'
         }
+        
         ndk {
             moduleName = 'main'
             cppFlags.addAll(["-I" + file("../SDL2/include/").absolutePath])
@@ -37,21 +61,17 @@ model {
                         library 'SDL2' linkage 'shared'
                     }
                     source {
-			srcDirs 'src/'
+                        srcDirs 'src/'
                         srcDirs '../SDL2/src/main/android/'
                     }
                 }
             }
         }
-
     }
 }
 
-// This is just copy out the header file and built lib into distribution
-// directory for clint application to use; it is a small overhead of this sample:
-//    both lib and app are put inside one project space [save maintenance time]
+// Task to move the built library to the distribution folder
 task(distributeLib, type : Copy) {
-    // trigger build library
     dependsOn assemble
     into '../distribution/main/'
     from('build/outputs/native/release/lib') {
