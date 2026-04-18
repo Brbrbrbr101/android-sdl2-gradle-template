@@ -1,15 +1,22 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Top-level build file with modern 2026 configuration
 buildscript {
     repositories {
-       jcenter()
+        google()            // Replaces the dead jcenter()
+        mavenCentral()      // Replaces the dead jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle-experimental:0.8.0-rc2'
+        // This is the stable modern engine. DO NOT use gradle-experimental.
+        classpath 'com.android.tools.build:gradle:8.2.2'
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
+        google()
+        mavenCentral()
     }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
