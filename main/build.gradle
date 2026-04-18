@@ -1,13 +1,13 @@
 buildscript {
     repositories {
+        // These are the reliable modern "stores"
         google()
         mavenCentral()
-        // We keep jcenter as a last-resort fallback for very old items
         jcenter() 
     }
     dependencies {
-        // CHANGED: Switched from 0.8.0-rc2 to 0.8.3 (Stable)
-        // This version is still available on Google/Maven repositories.
+        // CHANGED: Switched from 0.8.0-rc2 to 0.8.3
+        // This version is stable and actually exists on Google's servers.
         classpath 'com.android.tools.build:gradle-experimental:0.8.3'
     }
 }
