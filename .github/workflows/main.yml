@@ -9,41 +9,24 @@ jobs:
         with:
           submodules: recursive
 
-      # 1. Start with Java 17 for the Android SDK Manager
+      # Use Java 17 - Required for modern Gradle 8+
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
-      # 2. Setup Android SDK (This will now use Java 17)
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      # 3. Switch back to Java 8 for your specific project requirements
-      - name: Switch to Java 8
-        uses: actions/setup-java@v4
-        with:
-          java-version: '8'
-          distribution: 'temurin'
-
-      - name: Find and Build
+      - name: Build with Gradle
         run: |
-          # Find the gradlew file
-          GRADLEW_PATH=$(find . -name gradlew -print -quit)
-          if [ -z "$GRADLEW_PATH" ]; then
-            echo "Gradlew not found!"
-            exit 1
-          fi
-          
-          cd $(dirname "$GRADLEW_PATH")
           chmod +x gradlew
-          
-          # We explicitly use the Java 8 environment set in the previous step
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace
           
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: MyGame-APK
-          path: "**/*.apk"
+          path: "app/build/outputs/apk/debug/*.apk"
