@@ -1,20 +1,2 @@
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
 rootProject.name = "android-sdl2-gradle-template"
-
-// ONLY include app. 
-// We handle SDL2 and 'main' logic INSIDE the app module now via CMake.
 include ':app'
